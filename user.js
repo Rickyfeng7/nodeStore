@@ -74,18 +74,13 @@ function customerPrompt(){
 				message:"What would you like to buy ?",
 				name:"choice"
 			},
-			{
-				type:"input",
-				message:"how many do you wanna buy?",
-				name:"quantity"
-			}
 		])
 	.then(function(res){
 		var intiger = res.choice;
 
 		connection.query("SELECT * FROM stock WHERE id=?", intiger, function(err, res){
-       if(err) console.log(err, 'That item ID\ doesn\'t exist');
-       console.log(res);
+       	if(err) console.log(err, "not a valid id");
+       	console.log(res);
 		console.log(intiger)
 		var number = parseInt(intiger)
 		if(Number.isNaN(number)){
@@ -100,50 +95,34 @@ function customerPrompt(){
 			console.log("not in stock atm");
 			customerPrompt();
 		}
-		else{	
-			
-		}
-	   	});
+		else{
+			quantity();
+	   	};
 	})
 
 	// console.log(hold)
+})
 }
-// function quantity(){
 
-// 	inquirer.prompt([
-// 		{
-// 			type:"input",
-// 			message:"how many do you wanna buy?",
-// 			name:"quantity"
-// 		}
-// 	])
-// 	.then(function(answer){
-// 		var quantity = answer.quantity
-// 		if(quantity > res[0].stock.quantity){
-// 			console.log("not in stock")
-// 		} else{
-// 			console.log("Thanks for your purchese" + quantity)
-// 		}
-// 	})
-// }
-// .then(function(answer){
-// var quantity = answer.quantity;
-// if(quantity > res[0].stock_quantity){
-// console.log("not enough stock");
-// } else {
-// var newQuantity = res[0].stock_quantity - quantity;
-
-// connection.query("UPDATE products SET stock_quantity = " + newQuantity +" WHERE id = " + purchaseId, function(err, res){
-// if(err) throw err;
-// console.log('Problem ', err);
-
-// console.log("Thank you for purchasing: Your total is:" + quantity * res[0].price);
-// })
-
-
-// }
-// })
-
+function quantity(){
+	connection.query("SELECT * FROM stock", function(err, res){
+	inquirer.prompt([
+		{
+			type:"input",
+			message:"how many do you wanna buy?",
+			name:"quantity"
+		}
+	])
+	.then(function(answer){
+		var quantity = answer.quantity
+		if(quantity > res[0].stock.quantity){
+			console.log("not in stock")
+		} else{
+			console.log("Thanks for your purchese" + quantity)
+		}
+	})
+	})
+}
 
 
 
