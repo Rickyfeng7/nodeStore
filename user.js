@@ -51,80 +51,75 @@ connection.connect(function(err) {
 // inquirer();
 
 function customerScreen(){
-	connection.query("SELECT * FROM stock", function(err, res){
-		if (err) console.log(err)
-		var table = new Table({
-		head:["id", "player", "sport", "department", "price", "stock"]
-		})
-		for(var i = 0; i < res.length; i++){
-			table.push([res[i].id, res[i].player, res[i].sport, res[i].department, res[i].price, res[i].stock]
-			)
-		}
-		console.log("\n" + table.toString());
-		customerPrompt();
+	connection.query("SELECT * FROM products", function(err, res){
+	if (err) console.log(err)
+	var table = new Table({
+	head:["id", "player", "sport", "department", "price", "stock"]
+	})
+	for(var i = 0; i < res.length; i++){
+		table.push([res[i].id, res[i].player, res[i].sport, res[i].department, res[i].price, res[i].stock]
+		)
+	}
+	console.log("\n" + table.toString());
+	buyer();
 	})
 };
 
+customerScreen()
+function buyer(){
+connection.query("SELECT * FROM products", function(err, results) {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+			name: "choice",
+			type: "rawlist",
+			choices: function() {
+            var choiceArray = [];
+            for (var i = 0; i < results.length; i++) {
+              choiceArray.push(results[i].player);
+            }
+            return choiceArray;
+          },
+          message: "what do you wanna buy ?"
+        },
+        {
+          name: "userQuantity",
+          type: "input",
+          message: "How much would you want to buy?"
+        }
+      ])
+      .then(function(answer) {
+       
+        var chosenItem;
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].player === answer.choice) {
+            chosenItem = results[i];
+          }
+        }
 
-function customerPrompt(){
-	var hold = [];
-	inquirer.prompt([
-			{
-				type:"input",
-				message:"What would you like to buy ?",
-				name:"choice"
-			},
-		])
-	.then(function(res){
-		var intiger = res.choice;
-
-		connection.query("SELECT * FROM stock WHERE id=?", intiger, function(err, res){
-       	if(err) console.log(err, "not a valid id");
-       	console.log(res);
-		console.log(intiger)
-		var number = parseInt(intiger)
-		if(Number.isNaN(number)){
-			console.log("choose a valid number");
-			customerPrompt();
-		}
-		else if (number === 0){
-			console.log("zero is not a choice");
-			customerPrompt();
-		}
-		else if (number > 10 ){
-			console.log("not in stock atm");
-			customerPrompt();
-		}
-		else{
-			quantity();
-	   	};
-	})
-
-	// console.log(hold)
-})
+        if (chosenItem.stock >= parseInt(answer.userQuantity)) { var itemsStock = chosenItem.stock - parseInt(answer.userQuantity)
+          
+          connection.query(
+            "UPDATE products SET ? WHERE ?",
+            [
+              {
+                stock: itemsStock
+              },
+              {
+                id: chosenItem.id
+              }
+            ],
+            function(error) {
+              if (error) throw err;
+              console.log("you have successfully!" + chosenItem.player + " jersey" );
+              customerScreen();
+            }
+          );
+        }
+        else {
+          console.log("not enough in stock");
+        }
+      });
+  });
 }
-
-function quantity(){
-	connection.query("SELECT * FROM stock", function(err, res){
-	inquirer.prompt([
-		{
-			type:"input",
-			message:"how many do you wanna buy?",
-			name:"quantity"
-		}
-	])
-	.then(function(answer){
-		var quantity = answer.quantity
-		if(quantity > res[0].stock.quantity){
-			console.log("not in stock")
-		} else{
-			console.log("Thanks for your purchese" + quantity)
-		}
-	})
-	})
-}
-
-
-
-customerScreen();
-

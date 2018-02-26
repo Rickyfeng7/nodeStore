@@ -3,7 +3,7 @@ CREATE database salesdb;
 
 USE salesdb;
 
-CREATE TABLE stock (
+CREATE TABLE products (
 	id INT(200) AUTO_INCREMENT NOT NULL,
 	player VARCHAR (200) NULL,
 	sport VARCHAR (200) NULL,
@@ -13,9 +13,9 @@ CREATE TABLE stock (
 	PRIMARY KEY (id)
 );
 
-SELECT * FROM stock; 
+SELECT * FROM products; 
 
-INSERT INTO stock (player, sport, department, price, stock)
+INSERT INTO products (player, sport, department, price, stock)
 
 VALUES ("Yadier Molina", "baseball", "Jersey", 119.99, 10), ("Marshawn Lynch", "football", "Jersey", 99.99, 8), ("Jonathan Toews", "hockey", "Jersey", 84.99, 5), ("Carmelo Anthony", "basketball", "Jersey", 55.99, 6), ("Tom Brady", "football", "Jersey", 99.99, 1), ("Stephen Curry", "basketball", "Jersey", 69.99, 1), ("Pavel Datsyuk", "hockey", "Jersey", 164.99, 9),("Derek Jeter", "baseball", "Jersey", 134.99, 6), ("Derrick Rose", "basketball", "Jersey", 34.99, 7), ("Cristiano Ronaldo", "soccer", "Jersey", 134.99, 3)
 
