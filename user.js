@@ -1,14 +1,14 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
-var Table = require('cli-table');
-
+var Table = require("cli-table");
+var password = require ("./keys.js")
 var connection = mysql.createConnection({
 	host: "localhost",
 	port: 3306,
 
 	user: "root",
 
-	password: "UCBricky2018!",
+	password: password,
 	database: "salesdb"
 })
 
@@ -17,7 +17,7 @@ connection.connect(function(err) {
 	 // console.log("Connected as id: " + connection.threadId + "\n");
 });
 
-// function inquirer(){
+// function start(){
 // 	inquirer.prompt([
 // 			{
 // 				type:"Check Box",
@@ -44,12 +44,12 @@ connection.connect(function(err) {
 
 // 		// 	break;
 // 		// }
-		
+// 		customerScreen()
 // 	})
 // }
 
-// inquirer();
-
+// start();
+customerScreen();
 function customerScreen(){
 	connection.query("SELECT * FROM products", function(err, res){
 	if (err) console.log(err)
@@ -65,7 +65,6 @@ function customerScreen(){
 	})
 };
 
-customerScreen()
 function buyer(){
 connection.query("SELECT * FROM products", function(err, results) {
     if (err) throw err;
@@ -90,7 +89,6 @@ connection.query("SELECT * FROM products", function(err, results) {
         }
       ])
       .then(function(answer) {
-       
         var chosenItem;
         for (var i = 0; i < results.length; i++) {
           if (results[i].player === answer.choice) {
