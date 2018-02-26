@@ -1,0 +1,26 @@
+{
+  "name": "nodeStore",
+  "version": "1.0.0",
+  "description": "",
+  "main": "album.js",
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "inquirer": "^5.1.0",
+    "mysql": "^2.15.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rickyfeng7/nodeStore.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rickyfeng7/nodeStore/issues"
+  },
+  "homepage": "https://github.com/Rickyfeng7/nodeStore#readme"
+}
