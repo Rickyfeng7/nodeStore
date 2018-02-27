@@ -21,7 +21,7 @@ function start(){
 			{
         name: "action",
 				type:"list",
-				message:"\nAre you a Customer, Managers or CEO ?",
+				message:"\nAre you a Customer, Managers or CEO ? \nIf you are not a customer please hit Quit",
 				choices: 
 				[
 					"Customer",
@@ -115,7 +115,7 @@ function buyer(){
           if (error) throw err;
           var total = chosenItem.price * parseInt(answer.userQuantity);
           console.log("You have successfully purchased a " + chosenItem.player + " jersey" + "\nYou have spent: " + total);
-          customerScreen();
+          start();
         }
       );
       }
