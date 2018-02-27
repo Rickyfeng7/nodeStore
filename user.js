@@ -88,6 +88,11 @@ function buyer(){
         },
         message: "what do you wanna buy ?",
       },
+      {
+        name:"userQuantity",
+        type:"input",
+        message:"how much do you want to buy?"
+      }
     ])
     .then(function(answer) {
     var chosenItem;
@@ -108,7 +113,7 @@ function buyer(){
       ],
         function(error) {
           if (error) throw err;
-          var total = chosenItem.price * parseInt(answer.userQuantity)
+          var total = chosenItem.price * parseInt(answer.userQuantity);
           console.log("You have successfully purchased a " + chosenItem.player + " jersey" + "\nYou have spent: " + total);
           customerScreen();
         }
