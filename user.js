@@ -1,67 +1,73 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
 var Table = require("cli-table");
-var password = require ("./keys.js")
+var password = require ("./keys.js");
 var connection = mysql.createConnection({
-host: "localhost",
-port: 3306,
+  host: "localhost",
+  port: 3306,
 
-user: "root",
+  user: "root",
 
-password: password,
-database: "salesdb"
+  password: password,
+  database: "salesdb"
 })
 
 connection.connect(function(err) {
   if (err) throw err;
-// console.log("Connected as id: " + connection.threadId + "\n");
 });
 
-// function start(){
-// 	inquirer.prompt([
-// 			{
-// 				type:"Check Box",
-// 				message:"\nAre you a Customer, Managers or CEO ?",
-// 				choices: 
-// 				[
-// 					"Customer",
-// 					"Managers",
-// 					"CEO"
-// 				]
-// 			}
-// 		])
-// 	.then(function(response){
-// 		// switch(answer.action){
-// 		// 	case "Customer"
-// 		// 		// customerScreen();
-// 		// 	break;
+function start(){
+	inquirer.prompt([
+			{
+        name: "action",
+				type:"list",
+				message:"\nAre you a Customer, Managers or CEO ?",
+				choices: 
+				[
+					"Customer",
+					"Managers",
+					"CEO",
+          "Quit"
+				]
+			}
+		])
+	.then(function(response){
+      switch(response.action){
+  		case "Customer":
+  			customerScreen();
+  		break;
+  		case "Managers":
+        console.log("no one manages this store");
+        connection.end();
+        process.exit();
+  		break;
+  		case "CEO":
+        console.log("haha you wish you were a CEO");
+        connection.end();
+        process.exit();
+  		break;
+      case "Quit":
+        console.log("Good Bye")
+        connection.end();
+        process.exit();
+		}
+	})
+}
 
-// 		// 	case "Managers"
+start();
 
-// 		// 	break;
-
-// 		// 	case "CEO"
-
-// 		// 	break;
-// 		// }
-// 		customerScreen()
-// 	})
-// }
-
-// start();
-customerScreen();
-  function customerScreen(){
-    connection.query("SELECT * FROM products", function(err, res){
-      if (err) console.log(err)
-      var table = new Table({
-        head:["id", "player", "sport", "department", "price", "stock"]
-      })
-      for(var i = 0; i < res.length; i++){
-        table.push([res[i].id, res[i].player, res[i].sport, res[i].department, res[i].price, res[i].stock]
-        )
-      }
-    console.log("\n" + table.toString());
-    buyer();
+function customerScreen(){
+  connection.query("SELECT * FROM products", function(err, res){
+    if (err) console.log(err)
+    var table = new Table({
+      head:["id", "player", "sport", "department", "price", "stock"]
+    })
+    for(var i = 0; i < res.length; i++){
+      table.push([res[i].id, res[i].player, res[i].sport, res[i].department, res[i].price, res[i].stock]
+      )
+    }
+  console.log("\n" + table.toString());
+  buyer();
   })
 };
 
@@ -72,28 +78,23 @@ function buyer(){
     .prompt([
       {
         name: "choice",
-        type: "rawlist",
+        type: "list",
         choices: function() {
-        var choiceArray = [];
-        for (var i = 0; i < results.length; i++) {
-        choiceArray.push(results[i].player);
-      }
-        return choiceArray;
+          var choiceArray = [];
+          for (var i = 0; i < results.length; i++) {
+          choiceArray.push(results[i].player);
+          }
+          return choiceArray;
+        },
+        message: "what do you wanna buy ?",
       },
-        message: "what do you wanna buy ?"
-      },
-      {
-        name: "userQuantity",
-        type: "input",
-        message: "How much would you want to buy?"
-      }
     ])
     .then(function(answer) {
     var chosenItem;
     for (var i = 0; i < results.length; i++) {
-      if (results[i].player === answer.choice) {
-        chosenItem = results[i];
-      }
+        if (results[i].player === answer.choice) {
+          chosenItem = results[i];
+        }
       }
       if (chosenItem.stock >= parseInt(answer.userQuantity)) { var itemsStock = chosenItem.stock - parseInt(answer.userQuantity)
       connection.query("UPDATE products SET ? WHERE ?",
@@ -107,7 +108,8 @@ function buyer(){
       ],
         function(error) {
           if (error) throw err;
-          console.log("you have successfully!" + chosenItem.player + " jersey" );
+          var total = chosenItem.price * parseInt(answer.userQuantity)
+          console.log("You have successfully purchased a " + chosenItem.player + " jersey" + "\nYou have spent: " + total);
           customerScreen();
         }
       );
